@@ -46,7 +46,7 @@ def criarTabelas():
             titulo TEXT NOT NULL,
             salario FLOAT NOT NULL,
             localizacao TEXT NOT NULL,
-            requisitos TEXT NOT NULL,
+            requisito TEXT NOT NULL,
             descricao TEXT NOT NULL,            
             empresa_id INTEGER NOT NULL,
             FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE

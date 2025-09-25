@@ -4,7 +4,7 @@ from utils.mensagens_erro import ERROS
 
 vagas_bp = Blueprint("vagas", __name__)
 
-@vagas_bp.route("/vagas_bp", methods=["GET"])
+@vagas_bp.route("/", methods=["GET"])
 def listarVagas():
     return jsonify(listarVagas()), 200
 
@@ -35,7 +35,7 @@ def buscarVagaPorTitulo(titulo):
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
     return jsonify(vagaEncontrada), 200
 
-@vagas_bp.route("/vagas", methods=["POST"])
+@vagas_bp.route("/", methods=["POST"])
 def criar():
     dadosBody = request.json
     novaVaga, erro = criarVaga(dadosBody)

@@ -62,7 +62,7 @@ def editarEmpresa(id, novosDados):
     email = novosDados.get("email", empresaAtual["email"])
     senha = novosDados.get("senha", empresaAtual["senha"])
     
-    EmpresaDAO.update_empresa_by_id(username, nome, email, senha)
+    EmpresaDAO.update_empresa_by_id(username, nome, email, senha, id)
     empresaAtualizada = EmpresaDAO.select_empresa_by_id(id)
     return empresaAtualizada, None
 

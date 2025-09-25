@@ -10,7 +10,7 @@ def criarVaga(dados):
         return None, "EMPRESA_NAO_ENCONTRADA"
 
     
-    VagaDAO.insert_vaga(
+    vaga_id = VagaDAO.insert_vaga(
         dados["titulo"],
         dados["salario"],
         dados["localizacao"],
@@ -19,8 +19,7 @@ def criarVaga(dados):
         dados["empresa_id"]
     )
    
-    todas = VagaDAO.get_all_vagas()
-    return todas[-1], None
+    return VagaDAO.select_vaga_by_id(vaga_id), None
 
 def listarVagas():
     return VagaDAO.get_all_vagas()

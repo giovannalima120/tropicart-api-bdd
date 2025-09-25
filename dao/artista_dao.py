@@ -32,14 +32,14 @@ class ArtistaDAO:
         return artistaDict
 
     @staticmethod
-    def select_artista_by_id(usuario_id):
+    def select_artista_by_id(id):
         conexao = get_db_connection()
         cursor = conexao.cursor()
         cursor.execute(
             '''
-                SELECT * FROM usuarios WHERE usuario_id = ? AND categoria = "Artista";
+                SELECT * FROM usuarios WHERE id = ? AND categoria = "Artista";
             '''
-            , (usuario_id, )
+            , (id, )
         )
         row = cursor.fetchone()
         conexao.close()
@@ -74,6 +74,14 @@ class ArtistaDAO:
                 WHERE id = ? AND categoria = "Artista";
             '''
             , (username, nome, email, senha, area, id)
+        )
+        cursor.execute(
+            '''
+                UPDATE artistas
+                SET area = ?
+                where usuario_id = ?;
+            ''',
+            (area, id)
         )
         conexao.commit()
         conexao.close()
