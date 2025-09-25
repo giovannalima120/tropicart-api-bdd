@@ -2,17 +2,9 @@ from dao.usuario_dao import get_db_connection
 
 class EmpresaDAO:
     @staticmethod
-    def insert_empresa(username, nome, email, senha):
+    def insert_empresa(usuario_id):
         conexao = get_db_connection()
         cursor = conexao.cursor()
-        cursor.execute(
-            '''
-                INSERT INTO usuarios(username, nome, email, senha, categoria) VALUES (?, ?, ?, ?, "Empresa");
-            '''
-            , (username, nome, email, senha)
-        )
-        usuario_id = cursor.lastrowid
-
         cursor.execute(
             '''
             INSERT INTO empresas(usuario_id)
@@ -22,9 +14,6 @@ class EmpresaDAO:
         )
         conexao.commit()
         conexao.close()
-
-        return usuario_id
-
     @staticmethod
     def get_all_empresas():
         conexao = get_db_connection()

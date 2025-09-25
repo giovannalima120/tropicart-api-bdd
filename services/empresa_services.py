@@ -1,4 +1,5 @@
 from dao.empresa_dao import EmpresaDAO
+from dao.usuario_dao import UsuarioDAO
 
 
 def criarEmpresa(dados):
@@ -12,12 +13,16 @@ def criarEmpresa(dados):
         return None, "EMAIL_DUPLICADO"
 
     
-    usuario_id = EmpresaDAO.insert_empresa(
+    UsuarioDAO.insert_user(
         dados["username"],
         dados["nome"],
         dados["email"],
-        dados["senha"]
+        dados["senha"],
+        "Empresa"
     )
+
+    usuario = UsuarioDAO.select_user_by_username(dados["username"])
+    usuario_id = usuario["id"]
     empresaNova = EmpresaDAO.select_empresa_by_id(usuario_id)
     return empresaNova, None
 
