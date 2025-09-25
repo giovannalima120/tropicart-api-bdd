@@ -14,6 +14,7 @@ class EmpresaDAO:
         )
         conexao.commit()
         conexao.close()
+        
     @staticmethod
     def get_all_empresas():
         conexao = get_db_connection()
