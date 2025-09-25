@@ -2,9 +2,15 @@ from flask import Flask
 from dao.usuario_dao import get_db_connection
 from routes.usuarios import usuarios_bp
 from routes.artistas import artistas_bp
-
+from routes.empresa import empresas_bp
+from routes.vagas import vagas_bp
 
 app = Flask(__name__)
+
+app.register_blueprint(usuarios_bp, url_prefix="/usuarios")
+app.register_blueprint(artistas_bp, url_prefix="/artistas")
+app.register_blueprint(empresas_bp, url_prefix="/empresas")
+app.register_blueprint(vagas_bp, url_prefix="/vagas")
 
 def criarTabelas():
     conexao = get_db_connection()
