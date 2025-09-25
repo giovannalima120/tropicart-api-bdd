@@ -11,8 +11,16 @@ ERROS = {
         "mensagem": "O username fornecido já pertence a uma conta existente.",
         "status": 409
     },
-    "DADOS_INVALIDOS": {
-        "mensagem": "Os dados fornecidos são inválidos.",
-        "status": 400
+    "ARTISTA_NAO_ENCONTRADO": {
+        "mensagem": "O artista não foi encontrado.",
+        "status": 404 
+    },
+    "EMPRESA_NAO_ENCONTRADA": {
+        "mensagem": "A empresa não foi encontrado.",
+        "status": 404 
+    },
+    "VAGA_NAO_ENCONTRADA": {
+        "mensagem": "A vaga não foi encontrado.",
+        "status": 404 
     }
 }
