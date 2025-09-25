@@ -7,13 +7,4 @@ class Vaga:
         self.requisito = requisito
         self.descricao = descricao
 
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "titulo": self.titulo,
-            "salario": self.salario,
-            "localizacao": self.localizacao,
-            "requisito": self.requisito,
-            "descricao": self.descricao
-        }
-       
+

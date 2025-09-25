@@ -1,43 +1,45 @@
+from dao.usuario_dao import UsuarioDAO
 from models.usuario import Usuario
 
-usuarios = []
-
-idUsuario = 0
-
-def gerarId():
-    global idUsuario
-    idUsuario += 1
-    return idUsuario
 
 def criarUsuario(dados):
 
-    for u in usuarios:
-        if u.username == dados["username"]:
-            return None, "USERNAME_DUPLICADO"
-        
-    for u in usuarios:
-        if u.email == dados["email"]:
-            return None, "EMAIL_DUPLICADO"
+
+    if UsuarioDAO.select_user_by_username(dados["username"]):
+        return None, "USERNAME_DUPLICADO"
     
-        novoUsuario = Usuario(gerarId(), dados)
-        usuarios.append(novoUsuario)
-        return novoUsuario, None
+    todos = UsuarioDAO.get_all_users()
+    if any(u["email"] == dados["email"] for u in todos):
+        return None, "EMAIL_DUPLICADO"
+
+    
+    UsuarioDAO.insert_user(
+        dados["username"],
+        dados["nome"],
+        dados["email"],
+        dados["senha"],
+        dados["categoria"]
+    )
+    return UsuarioDAO.select_user_by_username(dados["username"]), None
 
 def listarUsuarios():
-    lista = [u.to_dict() for u in usuarios]
-    return lista
+    return UsuarioDAO.get_all_users()
 
 def buscarUserPorId(id):
-    for u in usuarios:
-        if u.id == id:
-            return u, None
-    return None, "USUARIO_NAO_ENCONTRADO"
+    user = UsuarioDAO.select_user_by_id(id)
+
+    if not user:
+        return None, "USUARIO_NAO_ENCONTRADO"
+    
+    return user, None
 
 def buscarUserPorUsername(username):
-    for u in usuarios:
-        if u.username == username:
-            return u, None
-    return None, "USUARIO_NAO_ENCONTRADO"
+    user = UsuarioDAO.select_user_by_username(username)
+
+    if not user:
+        return None, "USUARIO_NAO_ENCONTRADO"
+    
+    return user, None
 
 def editarUsuario(id, novosDados):
     usuarioEncontrado, erro = buscarUserPorId(id)
@@ -45,32 +47,24 @@ def editarUsuario(id, novosDados):
     if erro:
         return None, erro
     
-    novoEmail = novosDados.get("email")
-    novoUsername = novosDados.get("username")
+    if "username" in novosDados:
+        outro = UsuarioDAO.select_user_by_username(novosDados["username"])
+        if outro and outro["id"] != id:
+            return None, "USERNAME_DUPLICADO"
+  
+    if "email" in novosDados:
+        todos = UsuarioDAO.get_all_users()
+        if any(u["email"] == novosDados["email"] and u["id"] != id for u in todos):
+            return None, "EMAIL_DUPLICADO"
+        
+    usuarioAtualizado = UsuarioDAO.update_user_by_id(id, novosDados)
+    return usuarioAtualizado, None
 
-    if(novoUsername):
-        for u in usuarios:
-            if u.username == novosDados["username"]:
-                return None, "USERNAME_DUPLICADO"
-            
-    if(novoEmail):
-        for u in usuarios:
-            if u.email == novosDados["email"]:
-                return None, "EMAIL_DUPLICADO"
-    
-        usuarioEncontrado.username = novosDados.get("username", usuarioEncontrado.username)
-        usuarioEncontrado.nome = novosDados.get("nome", usuarioEncontrado.nome)
-        usuarioEncontrado.email = novosDados.get("email", usuarioEncontrado.email)
-        usuarioEncontrado.senha = novosDados.get("senha", usuarioEncontrado.senha)
-        usuarioEncontrado.categoria = novosDados.get("categoria", usuarioEncontrado.categoria)
-        return usuarioEncontrado, None
     
 def deletarUsuario(id):
-    global usuarios
-    usuarioEncontrado, erro = buscarUserPorId(id)
-
+    usuario, erro = buscarUserPorId(id)
     if erro:
         return False, erro
     
-    usuarios.remove(usuarioEncontrado)
+    UsuarioDAO.delete_user_by_id(id)
     return True, None

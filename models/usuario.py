@@ -6,12 +6,3 @@ class Usuario:
         self.email = email
         self.senha = senha
         self.categoria = categoria
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "username": self.username,
-            "nome": self.nome,
-            "email": self.email,
-            "categoria": self.categoria
-        }
