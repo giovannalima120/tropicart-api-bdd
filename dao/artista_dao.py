@@ -2,25 +2,20 @@ from dao.usuario_dao import get_db_connection
 
 class ArtistaDAO:
     @staticmethod
-    def insert_artista(username, nome, email, senha, area):
+    def insert_artista(usuario_id, area):
         conexao = get_db_connection()
         cursor = conexao.cursor()
         cursor.execute(
-            '''
-                INSERT INTO usuarios(username, nome, email, senha, categoria) VALUES (?, ?, ?, ?, "Artista");
-            '''
-            , (username, nome, email, senha)
-        )
-        usuario_id = cursor.lastrowid
-        cursor.execute(
-            '''
+        '''
             INSERT INTO artistas(usuario_id, area)
-            ''',
-            (usuario_id, area)
+            VALUES (?, ?);
+        ''',
+        (usuario_id, area)
         )
+        
         conexao.commit()
         conexao.close()
-        return usuario_id
+    
 
     @staticmethod
     def get_all_artistas():
@@ -37,18 +32,20 @@ class ArtistaDAO:
         return artistaDict
 
     @staticmethod
-    def select_artista_by_id(id):
+    def select_artista_by_id(usuario_id):
         conexao = get_db_connection()
         cursor = conexao.cursor()
         cursor.execute(
             '''
-                SELECT * FROM usuarios WHERE id = ? AND categoria = "Artista";
+                SELECT * FROM usuarios WHERE usuario_id = ? AND categoria = "Artista";
             '''
-            , (id, )
+            , (usuario_id, )
         )
-        artista = dict(cursor.fetchone())
+        row = cursor.fetchone()
         conexao.close()
-        return artista
+        if row: 
+            return dict(row)
+        return None
 
     @staticmethod
     def select_artista_by_username(username):
@@ -60,9 +57,11 @@ class ArtistaDAO:
             '''
             , (username, )
         )
-        artista = dict(cursor.fetchone())
+        row = cursor.fetchone()
         conexao.close()
-        return artista
+        if row: 
+            return dict(row)
+        return None
 
     @staticmethod
     def update_artista_by_id(username, nome, email, senha, area, id):

@@ -4,11 +4,11 @@ from utils.mensagens_erro import ERROS
 
 artistas_bp = Blueprint("artistas", __name__)
 
-@artistas_bp.route("/artistas", methods=["GET"])
+@artistas_bp.route("/", methods=["GET"])
 def listarArtistas():
     return jsonify(listarArtistas()), 200
 
-@artistas_bp.route("/artistas/<int:id>", methods=["GET"])
+@artistas_bp.route("/<int:id>", methods=["GET"])
 def buscarArtista(id):
     artistaEncontrado, erro = buscarArtistaPorId(id)
 
@@ -17,7 +17,7 @@ def buscarArtista(id):
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
     return jsonify(artistaEncontrado), 200
 
-@artistas_bp.route("/artistas", methods=["POST"])
+@artistas_bp.route("/", methods=["POST"])
 def criar():
     dadosBody = request.json
     novoArtista, erro = criarArtista(dadosBody)
@@ -27,7 +27,7 @@ def criar():
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
     return jsonify(novoArtista), 201
 
-@artistas_bp.route("/artistas/<int:id>", methods=["PUT"])
+@artistas_bp.route("/<int:id>", methods=["PUT"])
 def atualizar(id):
     artista, erro = editarArtista(id, request.json)
 
@@ -36,7 +36,7 @@ def atualizar(id):
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
     return jsonify(artista), 200
 
-@artistas_bp.route("/artistas/<int:id>", methods=["DELETE"])
+@artistas_bp.route("/<int:id>", methods=["DELETE"])
 def deletar(id):
     sucesso, erro = deletarArtista(id)
 

@@ -38,9 +38,11 @@ class VagaDAO:
             '''
             , (id, )
         )
-        vaga = dict(cursor.fetchone())
+        row = cursor.fetchone()
         conexao.close()
-        return vaga
+        if row: 
+            return dict(row)
+        return None
 
     @staticmethod
     def select_vaga_by_titulo(titulo):
@@ -52,9 +54,11 @@ class VagaDAO:
             '''
             , (titulo, )
         )
-        vaga = dict(cursor.fetchone())
+        row = cursor.fetchone()
         conexao.close()
-        return vaga
+        if row: 
+            return dict(row)
+        return None
     
     @staticmethod
     def select_vaga_by_empresa(empresa_id):

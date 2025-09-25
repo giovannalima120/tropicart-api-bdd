@@ -49,9 +49,11 @@ class EmpresaDAO:
             '''
             , (id, )
         )
-        empresa = dict(cursor.fetchone())
+        row = cursor.fetchone()
         conexao.close()
-        return empresa
+        if row: 
+            return dict(row)
+        return None
 
     @staticmethod
     def select_empresa_by_username(username):
@@ -63,9 +65,11 @@ class EmpresaDAO:
             '''
             , (username, )
         )
-        empresa = dict(cursor.fetchone())
+        row = cursor.fetchone()
         conexao.close()
-        return empresa
+        if row: 
+            return dict(row)
+        return None
 
     @staticmethod
     def update_empresa_by_id(username, nome, email, senha, id):

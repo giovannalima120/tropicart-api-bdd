@@ -4,11 +4,11 @@ from utils.mensagens_erro import ERROS
 
 usuarios_bp = Blueprint("usuarios", __name__)
 
-@usuarios_bp.route("/usuarios", methods=["GET"])
+@usuarios_bp.route("/", methods=["GET"])
 def listarUsuarios():
     return jsonify(listarUsuarios()), 200
 
-@usuarios_bp.route("/usuarios/<int:id>", methods=["GET"])
+@usuarios_bp.route("/<int:id>", methods=["GET"])
 def buscarUsuario(id):
     usuarioEncontrado, erro = buscarUserPorId(id)
 
@@ -17,7 +17,7 @@ def buscarUsuario(id):
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
     return jsonify(usuarioEncontrado), 200
 
-@usuarios_bp.route("/usuarios", methods=["POST"])
+@usuarios_bp.route("/", methods=["POST"])
 def criar():
     dadosBody = request.json
     novoUsuario, erro = criarUsuario(dadosBody)
@@ -27,7 +27,7 @@ def criar():
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
     return jsonify(novoUsuario), 201
 
-@usuarios_bp.route("/usuarios/<int:id>", methods=["PUT"])
+@usuarios_bp.route("/<int:id>", methods=["PUT"])
 def atualizar(id):
     usuario, erro = editarUsuario(id, request.json)
 
@@ -36,7 +36,7 @@ def atualizar(id):
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
     return jsonify(usuario), 200
 
-@usuarios_bp.route("/usuarios/<int:id>", methods=["DELETE"])
+@usuarios_bp.route("/<int:id>", methods=["DELETE"])
 def deletar(id):
     sucesso, erro = deletarUsuario(id)
 

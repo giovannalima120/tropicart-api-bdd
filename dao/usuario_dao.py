@@ -45,9 +45,11 @@ class UsuarioDAO:
             '''
             , (id, )
         )
-        user = dict(cursor.fetchone())
+        row = cursor.fetchone()
         conexao.close()
-        return user
+        if row: 
+            return dict(row)
+        return None
 
     @staticmethod
     def select_user_by_username(username):
@@ -59,10 +61,12 @@ class UsuarioDAO:
             '''
             , (username, )
         )
-        user = dict(cursor.fetchone())
+        row = cursor.fetchone()
         conexao.close()
-        return user
-
+        if row: 
+            return dict(row)
+        return None
+    
     @staticmethod
     def update_user_by_id(username, nome, email, senha, categoria, id):
         conexao = get_db_connection()

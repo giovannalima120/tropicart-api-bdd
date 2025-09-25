@@ -4,11 +4,11 @@ from utils.mensagens_erro import ERROS
 
 empresas_bp = Blueprint("empresas", __name__)
 
-@empresas_bp.route("/empresas", methods=["GET"])
+@empresas_bp.route("/", methods=["GET"])
 def listarEmpresas():
     return jsonify(listarEmpresas()), 200
 
-@empresas_bp.route("/empresas/<int:id>", methods=["GET"])
+@empresas_bp.route("/<int:id>", methods=["GET"])
 def buscarEmpresa(id):
     empresaEncontrada, erro = buscarEmpresaPorId(id)
 
@@ -17,7 +17,7 @@ def buscarEmpresa(id):
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
     return jsonify(empresaEncontrada), 200
 
-@empresas_bp.route("/empresas", methods=["POST"])
+@empresas_bp.route("/", methods=["POST"])
 def criar():
     dadosBody = request.json
     novaEmpresa, erro = criarEmpresa(dadosBody)
@@ -27,7 +27,7 @@ def criar():
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
     return jsonify(novaEmpresa), 201
 
-@empresas_bp.route("/empresas/<int:id>", methods=["PUT"])
+@empresas_bp.route("/<int:id>", methods=["PUT"])
 def atualizar(id):
     empresa, erro = editarEmpresa(id, request.json)
 
@@ -36,7 +36,7 @@ def atualizar(id):
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
     return jsonify(empresa), 200
 
-@empresas_bp.route("/empresas/<int:id>", methods=["DELETE"])
+@empresas_bp.route("/<int:id>", methods=["DELETE"])
 def deletar(id):
     sucesso, erro = deletarEmpresa(id)
 

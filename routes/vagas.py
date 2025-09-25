@@ -8,7 +8,7 @@ vagas_bp = Blueprint("vagas", __name__)
 def listarVagas():
     return jsonify(listarVagas()), 200
 
-@vagas_bp.route("/vagas/<int:id>", methods=["GET"])
+@vagas_bp.route("/<int:id>", methods=["GET"])
 def buscarVaga(id):
     vagaEncontrada, erro = buscarVagaPorId(id)
 
@@ -17,7 +17,7 @@ def buscarVaga(id):
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
     return jsonify(vagaEncontrada), 200
 
-@vagas_bp.route("/vagas/<int:empresa_id>", methods=["GET"])
+@vagas_bp.route("/<int:empresa_id>", methods=["GET"])
 def buscarVagaPorEmpresa(empresa_id):
     vagaEncontrada, erro = buscarVagaPorEmpresa(empresa_id)
 
@@ -26,7 +26,7 @@ def buscarVagaPorEmpresa(empresa_id):
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
     return jsonify(vagaEncontrada), 200
 
-@vagas_bp.route("/vagas/<titulo>", methods=["GET"])
+@vagas_bp.route("/<titulo>", methods=["GET"])
 def buscarVagaPorTitulo(titulo):
     vagaEncontrada, erro = buscarVagaPorTitulo(titulo)
 
@@ -45,7 +45,7 @@ def criar():
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
     return jsonify(novaVaga), 201
 
-@vagas_bp.route("/vagas/<int:id>", methods=["PUT"])
+@vagas_bp.route("/<int:id>", methods=["PUT"])
 def atualizar(id):
     usuario, erro = editarVaga(id, request.json)
 
@@ -54,7 +54,7 @@ def atualizar(id):
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
     return jsonify(usuario), 200
 
-@vagas_bp.route("/vagas/<int:id>", methods=["DELETE"])
+@vagas_bp.route("/<int:id>", methods=["DELETE"])
 def deletar(id):
     sucesso, erro = deletarVaga(id)
 
