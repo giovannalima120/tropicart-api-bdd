@@ -1,4 +1,5 @@
 from dao.artista_dao import ArtistaDAO
+from dao.usuario_dao import UsuarioDAO
 
 
 def criarArtista(dados):
@@ -12,13 +13,19 @@ def criarArtista(dados):
         return None, "EMAIL_DUPLICADO"
 
     
-    usuario_id = ArtistaDAO.insert_artista(
+    UsuarioDAO.insert_user(
         dados["username"],
         dados["nome"],
         dados["email"],
         dados["senha"],
-        dados["area"]
+        "Artista"
     )
+
+    usuario = UsuarioDAO.select_user_by_username(dados["username"])
+    usuario_id = usuario["id"]
+
+    ArtistaDAO.insert_artista(usuario_id, dados["area"])
+    
     novoArtista = ArtistaDAO.select_artista_by_id(usuario_id)
     return novoArtista, None
 
