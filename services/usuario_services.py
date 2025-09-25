@@ -1,5 +1,5 @@
 from dao.usuario_dao import UsuarioDAO
-from models.usuario import Usuario
+
 
 
 def criarUsuario(dados):
@@ -45,7 +45,7 @@ def editarUsuario(id, novosDados):
     usuarioEncontrado, erro = buscarUserPorId(id)
 
     if erro:
-        return None, erro
+        return None, "USUARIO_NAO_ENCONTRADO"
     
     if "username" in novosDados:
         outro = UsuarioDAO.select_user_by_username(novosDados["username"])
@@ -57,14 +57,22 @@ def editarUsuario(id, novosDados):
         if any(u["email"] == novosDados["email"] and u["id"] != id for u in todos):
             return None, "EMAIL_DUPLICADO"
         
-    usuarioAtualizado = UsuarioDAO.update_user_by_id(id, novosDados)
+    usuarioAtual = usuarioEncontrado
+    username = novosDados.get("username", usuarioAtual["username"])
+    nome = novosDados.get("nome", usuarioAtual["nome"])
+    email = novosDados.get("email", usuarioAtual["email"])
+    senha = novosDados.get("senha", usuarioAtual["senha"])
+    categoria = novosDados.get("categoria", usuarioAtual["categoria"])
+    
+    UsuarioDAO.update_user_by_id(username, nome, email, senha, categoria)
+    usuarioAtualizado = UsuarioDAO.select_user_by_id(id)
     return usuarioAtualizado, None
 
     
 def deletarUsuario(id):
     usuario, erro = buscarUserPorId(id)
     if erro:
-        return False, erro
+        return False, "USUARIO_NAO_ENCONTRADO"
     
     UsuarioDAO.delete_user_by_id(id)
     return True, None

@@ -1,92 +1,95 @@
 from dao.usuario_dao import get_db_connection
 
-class ArtistaDAO:
+class EmpresaDAO:
     @staticmethod
-    def insert_artista(username, nome, email, senha, area):
+    def insert_empresa(username, nome, email, senha):
         conexao = get_db_connection()
         cursor = conexao.cursor()
         cursor.execute(
             '''
-                INSERT INTO usuarios(username, nome, email, senha, categoria) VALUES (?, ?, ?, ?, "Artista");
+                INSERT INTO usuarios(username, nome, email, senha, categoria) VALUES (?, ?, ?, ?, "Empresa");
             '''
             , (username, nome, email, senha)
         )
         usuario_id = cursor.lastrowid
+
         cursor.execute(
             '''
-            INSERT INTO artistas(usuario_id, area)
+            INSERT INTO empresas(usuario_id)
+            VALUES (?);
             ''',
-            (usuario_id, area)
+            (usuario_id,)
         )
         conexao.commit()
         conexao.close()
+
         return usuario_id
 
     @staticmethod
-    def get_all_artistas():
+    def get_all_empresas():
         conexao = get_db_connection()
         cursor = conexao.cursor()
         cursor.execute(
             '''
-                SELECT * FROM usuarios WHERE categoria = "Artista";
+                SELECT * FROM usuarios WHERE categoria = "Empresa";
             '''
         )
-        artistas = cursor.fetchall()
-        artistaDict = [dict(a) for a in artistas]
+        empresas = cursor.fetchall()
+        empresaDict = [dict(a) for a in empresas]
         conexao.close()
-        return artistaDict
+        return empresaDict
 
     @staticmethod
-    def select_artista_by_id(id):
+    def select_empresa_by_id(id):
         conexao = get_db_connection()
         cursor = conexao.cursor()
         cursor.execute(
             '''
-                SELECT * FROM usuarios WHERE id = ? AND categoria = "Artista";
+                SELECT * FROM usuarios WHERE id = ? AND categoria = "Empresa";
             '''
             , (id, )
         )
-        artista = dict(cursor.fetchone())
+        empresa = dict(cursor.fetchone())
         conexao.close()
-        return artista
+        return empresa
 
     @staticmethod
-    def select_artista_by_username(username):
+    def select_empresa_by_username(username):
         conexao = get_db_connection()
         cursor = conexao.cursor()
         cursor.execute(
             '''
-                SELECT * FROM usuarios WHERE username = ? AND categoria = "Artista";
+                SELECT * FROM usuarios WHERE username = ? AND categoria = "Empresa";
             '''
             , (username, )
         )
-        artista = dict(cursor.fetchone())
+        empresa = dict(cursor.fetchone())
         conexao.close()
-        return artista
+        return empresa
 
     @staticmethod
-    def update_artista_by_id(username, nome, email, senha, area, id):
+    def update_empresa_by_id(username, nome, email, senha, id):
         conexao = get_db_connection()
         cursor = conexao.cursor()
         cursor.execute(
             '''
                 UPDATE usuarios
-                SET username = ?, nome = ?, email = ?, senha = ?, area = ?
-                WHERE id = ? AND categoria = "Artista";
+                SET username = ?, nome = ?, email = ?, senha = ?
+                WHERE id = ? AND categoria = "Empresa";
             '''
-            , (username, nome, email, senha, area, id)
+            , (username, nome, email, senha, id)
         )
         conexao.commit()
         conexao.close()
 
     @staticmethod
-    def delete_artista_by_id(id):
+    def delete_empresa_by_id(id):
         conexao = get_db_connection()
         cursor = conexao.cursor()
         cursor.execute(
             '''
                 DELETE FROM usuarios
-                WHERE id = ? AND categoria = "Artista";
+                WHERE id = ? AND categoria = "Empresa";
             '''
             , (id, )
         )
