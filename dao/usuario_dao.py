@@ -5,6 +5,7 @@ DATABASE = "usuario.db"
 def get_db_connection():
     conexao = sqlite3.connect(DATABASE)
     conexao.row_factory = sqlite3.Row
+    conexao.execute("PRAGMA foreign_keys = ON;")
     return conexao
 
 class UsuarioDAO:
