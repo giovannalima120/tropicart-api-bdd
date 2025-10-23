@@ -64,7 +64,7 @@ def editarUsuario(id, novosDados):
     senha = novosDados.get("senha", usuarioAtual["senha"])
     categoria = novosDados.get("categoria", usuarioAtual["categoria"])
     
-    UsuarioDAO.update_user_by_id(username, nome, email, senha, categoria)
+    UsuarioDAO.update_user_by_id(username, id, nome, email, senha, categoria)
     usuarioAtualizado = UsuarioDAO.select_user_by_id(id)
     return usuarioAtualizado, None
 
