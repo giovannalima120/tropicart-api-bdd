@@ -6,7 +6,8 @@ artistas_bp = Blueprint("artistas", __name__)
 
 @artistas_bp.route("/", methods=["GET"])
 def listarArtistas():
-    return jsonify(listarArtistas()), 200
+    artistas = ArtistaDAO.get_all_artistas()
+    return jsonify(artistas), 200
 
 @artistas_bp.route("/<int:id>", methods=["GET"])
 def buscarArtista(id):
@@ -20,7 +21,10 @@ def buscarArtista(id):
 @artistas_bp.route("/", methods=["POST"])
 def criar():
     dadosBody = request.json
-    novoArtista, erro = criarArtista(dadosBody)
+    usuario_id = dadosBody.get("usuario_id")
+    area = dadosBody.get("area")
+
+    novoArtista, erro = ArtistaDAO.insert_artista(usuario_id, area)
 
     if erro:
         errorInfo = ERROS.get(erro, {"mensagem": "Erro desconhecido", "status": 500})

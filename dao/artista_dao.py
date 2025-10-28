@@ -1,10 +1,20 @@
+import sqlite3
 from dao.usuario_dao import get_db_connection
 
 class ArtistaDAO:
     @staticmethod
     def insert_artista(usuario_id, area):
         conexao = get_db_connection()
+
         cursor = conexao.cursor()
+
+        cursor.execute(
+            "SELECT * FROM usuarios WHERE id = ?", 
+            (usuario_id,))
+        
+        if not cursor.fetchone():
+            raise ValueError("USUARIO_NAO_ENCONTRADO")
+        
         cursor.execute(
         '''
             INSERT INTO artistas(usuario_id, area)
@@ -14,8 +24,15 @@ class ArtistaDAO:
         )
         
         conexao.commit()
+
+        artista_id = cursor.lastrowid
+        cursor.execute("SELECT * FROM artistas WHERE id = ?;", (artista_id,))
+        artista = dict(cursor.fetchone())
+
+        cursor.close()
         conexao.close()
-    
+
+        return artista
 
     @staticmethod
     def get_all_artistas():

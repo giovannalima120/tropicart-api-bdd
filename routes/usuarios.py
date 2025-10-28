@@ -6,7 +6,8 @@ usuarios_bp = Blueprint("usuarios", __name__)
 
 @usuarios_bp.route("/", methods=["GET"])
 def listarUsuarios():
-    return jsonify(listarUsuarios()), 200
+    usuarios = UsuarioDAO.get_all_users()
+    return jsonify(usuarios), 200
 
 @usuarios_bp.route("/<int:id>", methods=["GET"])
 def buscarUsuario(id):
