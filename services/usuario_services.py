@@ -1,5 +1,6 @@
 from dao.usuario_dao import UsuarioDAO
-
+from dao.empresa_dao import EmpresaDAO
+from dao.artista_dao import ArtistaDAO
 
 
 def criarUsuario(dados):
@@ -20,7 +21,15 @@ def criarUsuario(dados):
         dados["senha"],
         dados["categoria"]
     )
-    return UsuarioDAO.select_user_by_username(dados["username"]), None
+    usuario = UsuarioDAO.select_user_by_username(dados["username"])
+
+    if usuario["categoria"].lower() == "artista":
+        area = dados.get("area", "Não informado")
+        ArtistaDAO.insert_artista(usuario["id"], area)
+    elif usuario["categoria"].lower() == "empresa":
+        EmpresaDAO.insert_empresa(usuario["id"])
+
+    return usuario, None
 
 def listarUsuarios():
     return UsuarioDAO.get_all_users()
