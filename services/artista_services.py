@@ -71,7 +71,7 @@ def editarArtista(id, novosDados):
     senha = novosDados.get("senha", artistaAtual["senha"])
     area = novosDados.get("area", artistaAtual["area"])
     
-    ArtistaDAO.update_artista_by_id(username, nome, email, senha, area)
+    ArtistaDAO.update_artista_by_id(username, nome, email, senha, area, id)
     artistaAtualizado = ArtistaDAO.select_artista_by_id(id)
     return artistaAtualizado, None
 

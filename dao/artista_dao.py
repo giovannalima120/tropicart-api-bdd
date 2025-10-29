@@ -1,4 +1,3 @@
-import sqlite3
 from dao.usuario_dao import get_db_connection
 
 class ArtistaDAO:
@@ -14,6 +13,13 @@ class ArtistaDAO:
         
         if not cursor.fetchone():
             raise ValueError("USUARIO_NAO_ENCONTRADO")
+        
+        cursor.execute(
+            "SELECT * FROM artistas WHERE usuario_id = ?", 
+            (usuario_id,)
+        )
+        if cursor.fetchone():
+            raise ValueError("ARTISTA_JA_EXISTE")
         
         cursor.execute(
         '''
@@ -40,7 +46,9 @@ class ArtistaDAO:
         cursor = conexao.cursor()
         cursor.execute(
             '''
-                SELECT * FROM usuarios WHERE categoria = "Artista";
+                SELECT DISTINCT u.id, u.username, u.nome, u.email, u.senha, a.area
+                from usuarios u
+                INNER JOIN artistas a ON u.id = a.usuario_id;
             '''
         )
         artistas = cursor.fetchall()
@@ -54,7 +62,10 @@ class ArtistaDAO:
         cursor = conexao.cursor()
         cursor.execute(
             '''
-                SELECT * FROM usuarios WHERE id = ? AND categoria = "Artista";
+                SELECT DISTINCT u.id, u.username, u.nome, u.email, u.senha, a.area
+                from usuarios u
+                JOIN artistas a ON u.id = a.usuario_id
+                WHERE u.id = ? AND u.categoria = "Artista";
             '''
             , (id, )
         )
@@ -70,7 +81,10 @@ class ArtistaDAO:
         cursor = conexao.cursor()
         cursor.execute(
             '''
-                SELECT * FROM usuarios WHERE username = ? AND categoria = "Artista";
+                SELECT u.id, u.username, u.nome, u.email, u.senha, a.area
+                from usuarios u
+                JOIN artistas a ON u.id = a.usuario_id
+                WHERE u.username = ? AND u.categoria = "Artista";
             '''
             , (username, )
         )
@@ -87,10 +101,10 @@ class ArtistaDAO:
         cursor.execute(
             '''
                 UPDATE usuarios
-                SET username = ?, nome = ?, email = ?, senha = ?, area = ?
+                SET username = ?, nome = ?, email = ?, senha = ?
                 WHERE id = ? AND categoria = "Artista";
             '''
-            , (username, nome, email, senha, area, id)
+            , (username, nome, email, senha, id)
         )
         cursor.execute(
             '''

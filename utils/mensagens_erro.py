@@ -15,6 +15,10 @@ ERROS = {
         "mensagem": "O artista não foi encontrado.",
         "status": 404 
     },
+    "ARTISTA_JA_EXISTE": {
+        "mensagem": "O artista já existe para o usuário fornecido.",
+        "status": 400
+    },
     "EMPRESA_NAO_ENCONTRADA": {
         "mensagem": "A empresa não foi encontrado.",
         "status": 404 

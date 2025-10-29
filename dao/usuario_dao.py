@@ -1,6 +1,6 @@
 import sqlite3
 
-DATABASE = "usuario.db"
+DATABASE = "tropicart.db"
 
 def get_db_connection():
     conexao = sqlite3.connect(DATABASE)

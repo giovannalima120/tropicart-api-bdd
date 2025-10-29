@@ -24,12 +24,14 @@ def criar():
     usuario_id = dadosBody.get("usuario_id")
     area = dadosBody.get("area")
 
-    novoArtista, erro = ArtistaDAO.insert_artista(usuario_id, area)
-
-    if erro:
-        errorInfo = ERROS.get(erro, {"mensagem": "Erro desconhecido", "status": 500})
+    try:
+        novoArtista = ArtistaDAO.insert_artista(usuario_id, area)
+        return jsonify(novoArtista), 201
+    except ValueError as e:
+        codigo_erro = str(e)
+        errorInfo = ERROS.get(codigo_erro, {"mensagem": "Erro desconhecido", "status": 500})
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
-    return jsonify(novoArtista), 201
+    
 
 @artistas_bp.route("/<int:id>", methods=["PUT"])
 def atualizar(id):
