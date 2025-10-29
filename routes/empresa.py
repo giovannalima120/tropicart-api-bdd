@@ -5,7 +5,7 @@ from utils.mensagens_erro import ERROS
 empresas_bp = Blueprint("empresas", __name__)
 
 @empresas_bp.route("/", methods=["GET"])
-def listarEmpresas():
+def listarEmpresasRoute():
     return jsonify(listarEmpresas()), 200
 
 @empresas_bp.route("/<int:id>", methods=["GET"])

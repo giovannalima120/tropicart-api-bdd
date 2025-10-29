@@ -4,7 +4,23 @@ class EmpresaDAO:
     @staticmethod
     def insert_empresa(usuario_id):
         conexao = get_db_connection()
+
         cursor = conexao.cursor()
+
+        cursor.execute(
+            "SELECT * FROM usuarios WHERE id = ?", 
+            (usuario_id,))
+        
+        if not cursor.fetchone():
+            raise ValueError("USUARIO_NAO_ENCONTRADO")
+        
+        cursor.execute(
+            "SELECT * FROM empresas WHERE usuario_id = ?", 
+            (usuario_id,)
+        )
+        if cursor.fetchone():
+            raise ValueError("EMPRESA_JA_EXISTE")
+        
         cursor.execute(
             '''
             INSERT INTO empresas(usuario_id)
@@ -12,8 +28,16 @@ class EmpresaDAO:
             ''',
             (usuario_id,)
         )
+
         conexao.commit()
+
+        empresa_id = cursor.lastrowid
+        cursor.execute("SELECT * FROM artistas WHERE id = ?;", (empresa_id,))
+        empresa = dict(cursor.fetchone())
+
+        cursor.close()
         conexao.close()
+        return empresa
         
     @staticmethod
     def get_all_empresas():
@@ -21,7 +45,9 @@ class EmpresaDAO:
         cursor = conexao.cursor()
         cursor.execute(
             '''
-                SELECT * FROM usuarios WHERE categoria = "Empresa";
+                SELECT DISTINCT u.id, u.username, u.nome, u.email, u.senha
+                from usuarios u
+                INNER JOIN empresas e ON u.id = e.usuario_id;
             '''
         )
         empresas = cursor.fetchall()
@@ -35,7 +61,10 @@ class EmpresaDAO:
         cursor = conexao.cursor()
         cursor.execute(
             '''
-                SELECT * FROM usuarios WHERE id = ? AND categoria = "Empresa";
+                SELECT DISTINCT u.id, u.username, u.nome, u.email, u.senha
+                from usuarios u
+                JOIN empresas e ON u.id = e.usuario_id
+                WHERE u.id = ? AND u.categoria = "Empresa";
             '''
             , (id, )
         )
@@ -51,7 +80,10 @@ class EmpresaDAO:
         cursor = conexao.cursor()
         cursor.execute(
             '''
-                SELECT * FROM usuarios WHERE username = ? AND categoria = "Empresa";
+                SELECT u.id, u.username, u.nome, u.email, u.senha
+                from usuarios u
+                JOIN empresas e ON u.id = e.usuario_id
+                WHERE u.username = ? AND u.categoria = "Empresa";
             '''
             , (username, )
         )

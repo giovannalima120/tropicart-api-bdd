@@ -23,6 +23,10 @@ ERROS = {
         "mensagem": "A empresa não foi encontrado.",
         "status": 404 
     },
+    "EMPRESA_JA_EXISTE": {
+        "mensagem": "A empresa já existe para o usuário fornecido.",
+        "status": 400
+    },
     "VAGA_NAO_ENCONTRADA": {
         "mensagem": "A vaga não foi encontrado.",
         "status": 404 
