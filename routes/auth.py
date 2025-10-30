@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from werkzeug.security import generate_password_hash, check_password_hash
-from dao.usuario_dao import get_db_connection
+from dao.usuario_dao import get_db_connection, UsuarioDAO
 from models.usuario import Usuario
 from services.usuario_services import criarUsuario, buscarUserPorEmail
 
@@ -15,19 +15,23 @@ def register():
     if not data or not data.get('email') or not data.get('senha'):
         return jsonify({"error": "Dados incompletos"}), 400
     
-    existing_user = buscarUserPorEmail(data['email'])
+    existing_user, erro = buscarUserPorEmail(data['email'])
     if existing_user:
         return jsonify({"error": "Email já cadastrado"}), 409
     
     hashed_password = generate_password_hash(data['senha'])
-    usuario = Usuario(
-        nome=data.get('nome'),
-        email=data['email'],
-        senha=hashed_password,
-        tipo=data.get('tipo', 'comum')
-    )
+
+    novoUsuario, erro = criarUsuario({
+        "username": data['username'],
+        "nome": data['nome'],
+        "email": data['email'],
+        "senha": hashed_password,
+        "categoria": data['categoria']
+    })
     
-    criarUsuario(usuario)
+    if erro:
+        return jsonify({"error": "erro"}), 400
+    
     return jsonify({"message": "Usuário registrado com sucesso"}), 201
 
 @auth_bp.route('/login', methods=['POST'])
@@ -37,11 +41,18 @@ def login():
     if not data or not data.get('email') or not data.get('senha'):
         return jsonify({"error": "Dados incompletos"}), 400
     
-    usuario = buscarUserPorEmail(data['email'])
-    if not usuario or not check_password_hash(usuario.senha, data['senha']):
+    usuario, erro = buscarUserPorEmail(data['email'])
+
+    if erro or not usuario or not check_password_hash(usuario["senha"], data['senha']):
         return jsonify({"error": "Credenciais inválidas"}), 401
     
-    access_token = create_access_token(identity=usuario.id)
+    if not check_password_hash(usuario["senha"], data['senha']):
+        return jsonify({"error": "Credenciais inválidas"}), 401
+    
+    if "id" not in usuario:
+        return jsonify({"error": "Usuário inválido"}), 400
+    
+    access_token = create_access_token(identity=str(usuario["id"]))
     return jsonify({"token": access_token}), 200
 
 @auth_bp.route('/logout', methods=['POST'])
