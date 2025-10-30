@@ -73,15 +73,15 @@ def editarUsuario(id, novosDados):
         todos = UsuarioDAO.get_all_users()
         if any(u["email"] == novosDados["email"] and u["id"] != id for u in todos):
             return None, "EMAIL_DUPLICADO"
-        
-    usuarioAtual = usuarioEncontrado
-    username = novosDados.get("username", usuarioAtual["username"])
-    nome = novosDados.get("nome", usuarioAtual["nome"])
-    email = novosDados.get("email", usuarioAtual["email"])
-    senha = novosDados.get("senha", usuarioAtual["senha"])
-    categoria = novosDados.get("categoria", usuarioAtual["categoria"])
     
-    UsuarioDAO.update_user_by_id(username, id, nome, email, senha, categoria)
+    username = novosDados.get("username", usuarioEncontrado["username"])
+    nome = novosDados.get("nome", usuarioEncontrado["nome"])
+    email = novosDados.get("email", usuarioEncontrado["email"])
+    senha = novosDados.get("senha", usuarioEncontrado["senha"])
+
+    print(f"Atualizando usuário: username={username}, nome={nome}, email={email}, senha={senha}, id={id}")
+    UsuarioDAO.update_user_by_id(username, nome, email, senha, id)
+
     usuarioAtualizado = UsuarioDAO.select_user_by_id(id)
     return usuarioAtualizado, None
 

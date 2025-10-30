@@ -4,40 +4,25 @@ class EmpresaDAO:
     @staticmethod
     def insert_empresa(usuario_id):
         conexao = get_db_connection()
-
         cursor = conexao.cursor()
 
         cursor.execute(
-            "SELECT * FROM usuarios WHERE id = ?", 
-            (usuario_id,))
-        
-        if not cursor.fetchone():
-            raise ValueError("USUARIO_NAO_ENCONTRADO")
-        
-        cursor.execute(
-            "SELECT * FROM empresas WHERE usuario_id = ?", 
+            "INSERT INTO empresas (usuario_id) VALUES (?)",
             (usuario_id,)
         )
-        if cursor.fetchone():
-            raise ValueError("EMPRESA_JA_EXISTE")
-        
-        cursor.execute(
-            '''
-            INSERT INTO empresas(usuario_id)
-            VALUES (?);
-            ''',
-            (usuario_id,)
-        )
-
         conexao.commit()
 
-        empresa_id = cursor.lastrowid
-        cursor.execute("SELECT * FROM artistas WHERE id = ?;", (empresa_id,))
-        empresa = dict(cursor.fetchone())
+        cursor.execute(
+            "SELECT * FROM empresas WHERE id = ?",
+            (cursor.lastrowid,)
+        )
+        empresa = cursor.fetchone()
 
-        cursor.close()
         conexao.close()
-        return empresa
+
+        if empresa is None:
+            raise ValueError("Erro ao inserir empresa: Nenhum resultado encontrado.")
+        return dict(empresa)
         
     @staticmethod
     def get_all_empresas():

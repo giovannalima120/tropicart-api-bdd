@@ -29,7 +29,7 @@ def criar():
     if erro:
         errorInfo = ERROS.get(erro, {"mensagem": "Erro desconhecido", "status": 500})
         return jsonify({"mensagem": errorInfo["mensagem"]}), errorInfo["status"]
-    return jsonify(novoUsuario), 201
+    return jsonify(novoUsuario), 
 
 @usuarios_bp.route("/<int:id>", methods=["PUT"])
 def atualizar(id):

@@ -10,14 +10,16 @@ def get_db_connection():
 
 class UsuarioDAO:
     @staticmethod
-    def insert_user(username, nome, email, senha, categoria):
+    def update_user_by_id(username, nome, email, senha, id):
         conexao = get_db_connection()
         cursor = conexao.cursor()
         cursor.execute(
             '''
-                INSERT INTO usuarios(username, nome, email, senha, categoria) VALUES (?, ?, ?, ?, ?);
-            '''
-            , (username, nome, email, senha, categoria)
+            UPDATE usuarios
+            SET username = ?, nome = ?, email = ?, senha = ?
+            WHERE id = ?;
+            ''',
+            (username, nome, email, senha, id)
         )
         conexao.commit()
         conexao.close()
@@ -83,21 +85,6 @@ class UsuarioDAO:
         if row: 
             return dict(row)
         return None
-    
-    @staticmethod
-    def update_user_by_id(username, nome, email, senha, categoria, id):
-        conexao = get_db_connection()
-        cursor = conexao.cursor()
-        cursor.execute(
-            '''
-                UPDATE usuarios
-                SET username = ?, nome = ?, email = ?, senha = ?, categoria = ?
-                WHERE id = ?;
-            '''
-            , (username, nome, email, senha, categoria, id)
-        )
-        conexao.commit()
-        conexao.close()
 
     @staticmethod
     def delete_user_by_id(id):
