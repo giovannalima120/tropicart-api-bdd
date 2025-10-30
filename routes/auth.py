@@ -3,7 +3,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from werkzeug.security import generate_password_hash, check_password_hash
 from dao.usuario_dao import get_db_connection
 from models.usuario import Usuario
-from services.usuario_services import criar_usuario, buscar_usuario_por_email
+from services.usuario_services import criarUsuario, buscarUserPorEmail
 
 auth_bp = Blueprint('auth', __name__)
 blacklist = set()
@@ -15,7 +15,7 @@ def register():
     if not data or not data.get('email') or not data.get('senha'):
         return jsonify({"error": "Dados incompletos"}), 400
     
-    existing_user = buscar_usuario_por_email(data['email'])
+    existing_user = buscarUserPorEmail(data['email'])
     if existing_user:
         return jsonify({"error": "Email já cadastrado"}), 409
     
@@ -27,7 +27,7 @@ def register():
         tipo=data.get('tipo', 'comum')
     )
     
-    criar_usuario(usuario)
+    criarUsuario(usuario)
     return jsonify({"message": "Usuário registrado com sucesso"}), 201
 
 @auth_bp.route('/login', methods=['POST'])
@@ -37,7 +37,7 @@ def login():
     if not data or not data.get('email') or not data.get('senha'):
         return jsonify({"error": "Dados incompletos"}), 400
     
-    usuario = buscar_usuario_por_email(data['email'])
+    usuario = buscarUserPorEmail(data['email'])
     if not usuario or not check_password_hash(usuario.senha, data['senha']):
         return jsonify({"error": "Credenciais inválidas"}), 401
     

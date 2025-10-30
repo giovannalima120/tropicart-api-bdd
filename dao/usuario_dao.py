@@ -69,6 +69,22 @@ class UsuarioDAO:
         return None
     
     @staticmethod
+    def select_user_by_email(email):
+        conexao = get_db_connection()
+        cursor = conexao.cursor()
+        cursor.execute(
+            '''
+                SELECT * FROM usuarios WHERE email = ?;
+            '''
+            , (email, )
+        )
+        row = cursor.fetchone()
+        conexao.close()
+        if row: 
+            return dict(row)
+        return None
+    
+    @staticmethod
     def update_user_by_id(username, nome, email, senha, categoria, id):
         conexao = get_db_connection()
         cursor = conexao.cursor()

@@ -50,6 +50,14 @@ def buscarUserPorUsername(username):
     
     return user, None
 
+def buscarUserPorEmail(email):
+    user = UsuarioDAO.select_user_by_email(email)
+
+    if not user:
+        return None, "USUARIO_NAO_ENCONTRADO"
+    
+    return user, None
+
 def editarUsuario(id, novosDados):
     usuarioEncontrado, erro = buscarUserPorId(id)
 
