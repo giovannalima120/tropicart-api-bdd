@@ -1,12 +1,28 @@
 from flask import Flask
+from flask_jwt_extended import JWTManager
+from flask_bcrypt import Bcrypt
+from datetime import timedelta
 from dao.usuario_dao import get_db_connection
 from routes.usuarios import usuarios_bp
 from routes.artistas import artistas_bp
 from routes.empresa import empresas_bp
 from routes.vagas import vagas_bp
+from routes.auth import auth_bp, blacklist
 
 app = Flask(__name__)
 
+app.config['JWT_SECRET_KEY'] = 'sua-chave-secreta-muito-secreta'  # Altere para uma chave segura em produção
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)  # Token expira em 1 hora
+
+jwt = JWTManager(app)
+bcrypt = Bcrypt(app)
+
+@jwt.token_in_blocklist_loader
+def check_if_token_in_blacklist(jwt_header, jwt_payload):
+    jti = jwt_payload["jti"]
+    return jti in blacklist
+
+app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(usuarios_bp, url_prefix="/usuarios")
 app.register_blueprint(artistas_bp, url_prefix="/artistas")
 app.register_blueprint(empresas_bp, url_prefix="/empresas")

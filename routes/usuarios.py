@@ -1,15 +1,18 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from services.usuario_services import *
 from utils.mensagens_erro import ERROS
 
 usuarios_bp = Blueprint("usuarios", __name__)
 
 @usuarios_bp.route("/", methods=["GET"])
+@jwt_required()
 def listarUsuarios():
     usuarios = UsuarioDAO.get_all_users()
     return jsonify(usuarios), 200
 
 @usuarios_bp.route("/<int:id>", methods=["GET"])
+@jwt_required()
 def buscarUsuario(id):
     usuarioEncontrado, erro = buscarUserPorId(id)
 
